@@ -196,6 +196,7 @@ const MainPage: FC<{
         contentContainerStyle={{flexGrow: 1}}
         data={data}
         renderItem={renderItem}
+        keyboardDismissMode={'on-drag'}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}

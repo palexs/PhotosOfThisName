@@ -102,6 +102,7 @@ const ContactsPage: FC<{
         data={filteredContacts}
         keyExtractor={(item: Contact) => item.recordID}
         renderItem={renderItem}
+        keyboardDismissMode={'on-drag'}
       />
     );
   };
