@@ -65,7 +65,7 @@ const MainPage: FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  const onItemPress = async (item: Photo) => {
+  const onItemPress = (item: Photo) => {
     const url = getSizedImageUrlForPhoto(item, PhotoSize.medium800);
     dispatch(openURL(url));
   };
@@ -75,7 +75,7 @@ const MainPage: FC<{
       <ListItem
         key={item.id}
         bottomDivider
-        style={{marginHorizontal: 10}}
+        style={styles.listItem}
         onPress={() => onItemPress(item)}>
         <Image
           style={styles.thumbnailImage}
@@ -199,6 +199,7 @@ const MainPage: FC<{
         </View>
       );
     }
+
     return (
       <FlatList
         style={styles.photosList}
@@ -262,6 +263,9 @@ const styles = StyleSheet.create({
   },
   photosList: {
     marginVertical: 10,
+  },
+  listItem: {
+    marginHorizontal: 10,
   },
   emptyListContainer: {
     flex: 1,
