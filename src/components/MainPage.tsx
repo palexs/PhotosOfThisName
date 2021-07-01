@@ -1,10 +1,9 @@
-import React, {FC, useState, useRef, useEffect, useCallback} from 'react';
+import React, {FC, useState, useRef, useEffect} from 'react';
 import {
   Text,
   View,
   SafeAreaView,
   FlatList,
-  Linking,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
@@ -12,99 +11,41 @@ import {Button, Icon, Input, ListItem, Image} from 'react-native-elements';
 import {Contact} from 'react-native-contacts';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from './App';
-
-const API_KEY = 'e9ed25c3cad22a3ab90a4a1c15dc9dec';
-
-enum PhotoSize {
-  thumbnail75 = 's',
-  thumbnail100 = 't',
-  thumbnail150 = 'q',
-  small240 = 'm',
-  small320 = 'n',
-  small400 = 'w',
-  medium800 = 'c',
-  large1024 = 'b',
-  large1600 = 'h',
-  large2048 = 'k',
-}
-
-type NumericBool = 0 | 1;
-
-interface Photo {
-  id: string;
-  owner: string;
-  secret: string;
-  server: string;
-  farm: number;
-  title: string;
-  ispublic: NumericBool;
-  isfriend: NumericBool;
-  isfamily: NumericBool;
-}
+import {search, loadMore, openURL} from '../store/search/actions';
+import {
+  getQuery,
+  getFetching,
+  getLoadingMore,
+  getTotalPages,
+  getError,
+  getData,
+  getSizedImageUrlForPhoto,
+} from '../store/search/selectors';
+import {Photo, PhotoSize} from '../store/search/types';
+import {useAppSelector} from '../store/hooks';
+import {useDispatch} from 'react-redux';
 
 const MainPage: FC<{
   navigation: StackNavigationProp<RootStackParamList, 'Main'>;
 }> = ({navigation}) => {
   const [name, setName] = useState('');
-  const [data, setData] = useState<Photo[]>([]);
-  const [fetching, setFetching] = useState(false);
-  const [fetchingMore, setFetchingMore] = useState(false);
   const [page, setPage] = useState(0);
-  const [error, setError] = useState<Error | null>(null);
+
+  const query = useAppSelector(getQuery);
+  const fetching = useAppSelector(getFetching);
+  const data = useAppSelector(getData);
+  const totalPages = useAppSelector(getTotalPages);
+  const loadingMore = useAppSelector(getLoadingMore);
+  const error = useAppSelector(getError);
 
   const didMount = useRef(false);
-  const totalPages = useRef(0);
   const inputRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   const onSelectContact = (contact: Contact) => {
     setName(contact.givenName);
   };
-
-  const fetchPhotos = useCallback(
-    async (isInitialSearch: boolean = false) => {
-      // ReactDOM.unstable_batchedUpdates(() => {});
-      setFetching(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&text=${name}&format=json&page=${
-            isInitialSearch ? 1 : page
-          }&nojsoncallback=1`,
-        );
-        if (response.status !== 200) {
-          // ReactDOM.unstable_batchedUpdates(() => {});
-          setData([]);
-          setFetching(false);
-          setError(
-            Error(`Data is unavailable. Response status: ${response.status}`),
-          );
-          return;
-        }
-
-        const jsonData = await response.json();
-        const {stat, photos} = jsonData;
-        if (stat === 'ok') {
-          totalPages.current = photos.pages;
-          if (photos.total > 0) {
-            setData(prevData =>
-              isInitialSearch ? photos.photo : [...prevData, ...photos.photo],
-            );
-          }
-        } else {
-          // ReactDOM.unstable_batchedUpdates(() => {});
-          setData([]);
-          setError(Error(jsonData.message || 'Unknown error occurred.'));
-        }
-        setFetching(false);
-      } catch (err) {
-        // ReactDOM.unstable_batchedUpdates(() => {});
-        setData([]);
-        setFetching(false);
-        setError(err);
-      }
-    },
-    [name, page],
-  );
 
   useEffect(() => {
     if (inputRef && inputRef.current) {
@@ -115,8 +56,8 @@ const MainPage: FC<{
 
   useEffect(() => {
     if (didMount.current) {
-      if (!fetching && page <= totalPages.current) {
-        fetchPhotos();
+      if (!loadingMore && page <= totalPages) {
+        dispatch(loadMore(page));
       }
     } else {
       didMount.current = true;
@@ -124,21 +65,9 @@ const MainPage: FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  const getSizedImageUrlForPhoto = (
-    photo: Photo,
-    size: PhotoSize = PhotoSize.small240,
-  ) => {
-    return `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_${size}.jpg`;
-  };
-
   const onItemPress = async (item: Photo) => {
     const url = getSizedImageUrlForPhoto(item, PhotoSize.medium800);
-    const isSupported = await Linking.canOpenURL(url);
-    if (isSupported) {
-      await Linking.openURL(url);
-    } else {
-      console.warn(`Can't open URI: ${url}`);
-    }
+    dispatch(openURL(url));
   };
 
   const renderItem = ({item, index}: {item: Photo; index: number}) => {
@@ -164,21 +93,17 @@ const MainPage: FC<{
 
   const onEndReached = () => {
     if (!fetching) {
-      // ReactDOM.unstable_batchedUpdates(() => {});
       setPage(prevPage => prevPage + 1);
-      setFetchingMore(true);
     }
   };
 
   const onFetchPhotosPress = async () => {
-    // ReactDOM.unstable_batchedUpdates(() => {});
     setPage(1);
-    setData([]);
-    await fetchPhotos(true);
+    await dispatch(search(name));
   };
 
   const renderFooter = () => {
-    if (!fetchingMore || page >= totalPages.current || data.length === 0) {
+    if (!loadingMore || page >= totalPages || data.length === 0) {
       return null;
     }
     return (
@@ -192,7 +117,7 @@ const MainPage: FC<{
     return (
       <View style={styles.emptyListContainer}>
         <Text style={styles.noResultsText}>
-          {didMount.current ? 'No results found.' : ''}
+          {query !== '' && data.length === 0 ? 'No results found.' : ''}
         </Text>
       </View>
     );

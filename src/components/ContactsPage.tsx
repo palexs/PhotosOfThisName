@@ -5,14 +5,21 @@ import {
   StyleSheet,
   View,
   FlatList,
-  Platform,
-  PermissionsAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import {SearchBar, ListItem, Avatar} from 'react-native-elements';
 import Contacts, {Contact} from 'react-native-contacts';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from './App';
+import {useDispatch} from 'react-redux';
+import {useAppSelector} from '../store/hooks';
+import {loadContacts} from '../store/contacts/actions';
+import {
+  getContacts,
+  getPermissionsGranted,
+  getLoading,
+} from '../store/contacts/selectors';
 
 const ContactsPage: FC<{
   navigation: StackNavigationProp<RootStackParamList, 'Contacts'>;
@@ -20,61 +27,19 @@ const ContactsPage: FC<{
 }> = ({navigation, route}) => {
   const [search, setSearch] = useState('');
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [permissionGranted, setPermissionGranted] = useState<boolean | null>(
-    null,
-  );
+  const contacts = useAppSelector(getContacts);
+  const permissionGranted = useAppSelector(getPermissionsGranted);
+  const loading = useAppSelector(getLoading);
 
-  const requestPermissionsAndLoadContactsIOS = async () => {
-    const permissionStatus = await Contacts.requestPermission();
-    if (permissionStatus === 'authorized') {
-      await loadContacts();
-      setPermissionGranted(true);
-    } else {
-      setPermissionGranted(false);
-    }
-  };
-
-  const requestPermissionsAndLoadContactsAndroid = async () => {
-    const permissionStatus = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-      {
-        title: 'Contacts',
-        message: 'This app would like to access your contacts.',
-        buttonPositive: 'Grant access',
-      },
-    );
-    if (permissionStatus === 'granted') {
-      await loadContacts();
-      setPermissionGranted(true);
-    } else {
-      setPermissionGranted(false);
-    }
-  };
-
-  const loadContacts = async () => {
-    Contacts.getAll()
-      .then(allContacts => {
-        setFilteredContacts(allContacts);
-        setContacts(allContacts);
-      })
-      .catch(e => {
-        // this.setState({ loading: false });
-        console.log('>>> ERROR: ', e);
-      });
-
-    // await Contacts.checkPermission();
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      if (Platform.OS === 'android') {
-        await requestPermissionsAndLoadContactsAndroid();
-      } else {
-        await requestPermissionsAndLoadContactsIOS();
-      }
-    })();
+    dispatch(loadContacts());
   }, []);
+
+  useEffect(() => {
+    setFilteredContacts(contacts);
+  }, [contacts]);
 
   const searchFilterFunction = (query: string) => {
     if (query) {
@@ -110,34 +75,57 @@ const ContactsPage: FC<{
     route.params.onSelectContact(item);
   };
 
-  if (permissionGranted === false) {
+  const renderSearchBar = () => {
+    return (
+      <SearchBar
+        round
+        searchIcon={{size: 24}}
+        onChangeText={(text: string) => searchFilterFunction(text)}
+        onClear={() => searchFilterFunction('')}
+        placeholder={'Type name here...'}
+        value={search}
+        lightTheme
+      />
+    );
+  };
+
+  const renderContactsList = () => {
+    if (loading) {
+      return (
+        <View style={styles.mainActivityIndicatorContainer}>
+          <ActivityIndicator size={'large'} />
+        </View>
+      );
+    }
+    return (
+      <FlatList
+        data={filteredContacts}
+        keyExtractor={(item: Contact) => item.recordID}
+        renderItem={renderItem}
+      />
+    );
+  };
+
+  const renderPermissionsNotGrantedMessage = () => {
     // TODO: Request access
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <View style={styles.container}>
+      <SafeAreaView style={styles.pageContainer}>
+        <View style={styles.permissionsNotGrantedMessageContainer}>
           <Text>{'Contacts access permissions not granted!'}</Text>
         </View>
       </SafeAreaView>
     );
+  };
+
+  if (permissionGranted === false) {
+    return renderPermissionsNotGrantedMessage();
   }
 
   return (
     <SafeAreaView style={styles.pageContainer}>
       <View style={styles.container}>
-        <SearchBar
-          round
-          searchIcon={{size: 24}}
-          onChangeText={(text: string) => searchFilterFunction(text)}
-          onClear={() => searchFilterFunction('')}
-          placeholder={'Type name here...'}
-          value={search}
-          lightTheme
-        />
-        <FlatList
-          data={filteredContacts}
-          keyExtractor={(item: Contact) => item.recordID}
-          renderItem={renderItem}
-        />
+        {renderSearchBar()}
+        {renderContactsList()}
       </View>
     </SafeAreaView>
   );
@@ -150,6 +138,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  mainActivityIndicatorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  permissionsNotGrantedMessageContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
 });
 
