@@ -5,12 +5,21 @@ PhotosOfThisName is a simple React Native app that makes use of Flickr API.
 ## Installation
 
 ```bash
+git clone https://github.com/palexs/PhotosOfThisName.git
+cd PhotosOfThisName
+yarn install
+cd ios
+pod install
 ```
 
 ## Usage
 
-```typescript
+```bash
+// To run the app on iOS:
+yarn run ios
 
+// To run the app on Android:
+yarn run android
 ```
 
 ## Contributing
