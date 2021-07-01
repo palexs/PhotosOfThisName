@@ -5,6 +5,7 @@ import {
   LOAD_MORE_START,
   LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILURE,
+  TRACK_OPEN_URL,
 } from './constants';
 
 type NumericBool = 0 | 1;
@@ -81,10 +82,15 @@ interface LoadMoreFailureAction {
   error: Error;
 }
 
+interface TrackOpenURL {
+  type: typeof TRACK_OPEN_URL;
+}
+
 export type Action =
   | SearchStartAction
   | SearchSuccessAction
   | SearchFailureAction
   | LoadMoreStartAction
   | LoadMoreSuccessAction
-  | LoadMoreFailureAction;
+  | LoadMoreFailureAction
+  | TrackOpenURL;

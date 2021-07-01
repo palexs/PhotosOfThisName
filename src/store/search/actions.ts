@@ -7,6 +7,7 @@ import {
   LOAD_MORE_START,
   LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILURE,
+  TRACK_OPEN_URL,
 } from './constants';
 
 export const search = (name: string) => async (dispatch: AppDispatch) => {
@@ -45,6 +46,7 @@ export const openURL =
     const isSupported = await Linking.canOpenURL(url);
     if (isSupported) {
       await Linking.openURL(url);
+      dispatch({type: TRACK_OPEN_URL, url});
     } else {
       console.warn(`Can't open URI: ${url}`);
     }

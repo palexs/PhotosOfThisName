@@ -4,6 +4,7 @@ import {
   LOAD_CONTACTS_SUCCESS,
   LOAD_CONTACTS_FAILURE,
   SET_PERMISSIONS_GRANTED,
+  TRACK_GRANT_ACCESS,
 } from './constants';
 
 export interface ContactsState {
@@ -32,8 +33,13 @@ interface SetPermissionsGranted {
   granted: boolean;
 }
 
+interface TrackGrantAccess {
+  type: typeof TRACK_GRANT_ACCESS;
+}
+
 export type Action =
   | LoadContactsStart
   | LoadContactsSuccess
   | LoadContactsFailure
-  | SetPermissionsGranted;
+  | SetPermissionsGranted
+  | TrackGrantAccess;

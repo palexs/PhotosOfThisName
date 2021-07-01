@@ -7,14 +7,14 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import {SearchBar, ListItem, Avatar} from 'react-native-elements';
+import {SearchBar, ListItem, Avatar, Button} from 'react-native-elements';
 import Contacts, {Contact} from 'react-native-contacts';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from './App';
 import {useDispatch} from 'react-redux';
 import {useAppSelector} from '../store/hooks';
-import {loadContacts} from '../store/contacts/actions';
+import {grantAccess, loadContacts} from '../store/contacts/actions';
 import {
   getContacts,
   getPermissionsGranted,
@@ -107,11 +107,16 @@ const ContactsPage: FC<{
   };
 
   const renderPermissionsNotGrantedMessage = () => {
-    // TODO: Request access
     return (
       <SafeAreaView style={styles.pageContainer}>
         <View style={styles.permissionsNotGrantedMessageContainer}>
-          <Text>{'Contacts access permissions not granted!'}</Text>
+          <Text style={styles.permissionsNotGrantedMessageText}>
+            {'Contacts access permissions not granted!'}
+          </Text>
+          <Button
+            title={'Grant access'}
+            onPress={() => dispatch(grantAccess())}
+          />
         </View>
       </SafeAreaView>
     );
@@ -149,6 +154,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  permissionsNotGrantedMessageText: {
+    paddingBottom: 10,
   },
 });
 

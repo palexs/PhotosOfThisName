@@ -5,6 +5,7 @@ import logger from 'redux-logger';
 import Contacts from 'react-native-contacts';
 import searchReducer from './search/reducer';
 import contactsReducer from './contacts/reducer';
+import analyticsMiddleware from '../middleware/analytics';
 
 export interface Dependencies {
   Linking: typeof Linking;
@@ -20,7 +21,10 @@ const dependencies = {
   Platform,
 };
 
-const middlewares: any[] = [thunk.withExtraArgument(dependencies)];
+const middlewares: any[] = [
+  thunk.withExtraArgument(dependencies),
+  analyticsMiddleware(),
+];
 if (__DEV__) {
   middlewares.push(logger);
 }

@@ -5,6 +5,7 @@ import {
   LOAD_CONTACTS_SUCCESS,
   LOAD_CONTACTS_FAILURE,
   SET_PERMISSIONS_GRANTED,
+  TRACK_GRANT_ACCESS,
 } from './constants';
 
 export const loadContacts =
@@ -70,4 +71,15 @@ const loadContactsAndroid =
     } else {
       dispatch({type: SET_PERMISSIONS_GRANTED, granted: false});
     }
+  };
+
+export const grantAccess =
+  () =>
+  async (
+    dispatch: Dispatch<any>,
+    getState: GetRootState,
+    {Linking}: Dependencies,
+  ) => {
+    await Linking.openSettings();
+    dispatch({type: TRACK_GRANT_ACCESS});
   };
