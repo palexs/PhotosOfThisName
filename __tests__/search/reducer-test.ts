@@ -10,7 +10,7 @@ import {
 import {Action, Photo} from '../../src/store/search/types';
 
 describe('search reducer', () => {
-  let photo1: Photo = {
+  const photo1: Photo = {
     id: 'id1',
     owner: 'owner1',
     secret: 'secret1',
@@ -22,7 +22,7 @@ describe('search reducer', () => {
     isfamily: 0,
   };
 
-  let photo2: Photo = {
+  const photo2: Photo = {
     id: 'id2',
     owner: 'owner2',
     secret: 'secret2',
