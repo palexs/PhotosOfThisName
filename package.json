@@ -38,11 +38,14 @@
     "@types/jest": "26.0.23",
     "@types/react-native": "0.64.10",
     "@types/react-test-renderer": "16.9.5",
+    "@types/redux-mock-store": "1.0.2",
     "babel-jest": "26.6.3",
     "eslint": "7.14.0",
     "jest": "26.6.3",
+    "jest-fetch-mock": "3.0.3",
     "metro-react-native-babel-preset": "0.64.0",
     "react-test-renderer": "17.0.1",
+    "redux-mock-store": "1.5.4",
     "typescript": "3.9.10"
   },
   "resolutions": {
@@ -57,6 +60,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/helpers.ts"
     ]
   }
 }
