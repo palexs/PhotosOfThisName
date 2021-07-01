@@ -70,7 +70,7 @@ const MainPage: FC<{
     dispatch(openURL(url));
   };
 
-  const renderItem = ({item, index}: {item: Photo; index: number}) => {
+  const renderItem = ({item}: {item: Photo}) => {
     return (
       <ListItem
         key={item.id}
@@ -85,7 +85,16 @@ const MainPage: FC<{
         />
         <ListItem.Content>
           <ListItem.Title>{item.title}</ListItem.Title>
-          <ListItem.Subtitle>{index}</ListItem.Subtitle>
+          <View style={styles.userNameContainer}>
+            <Icon
+              style={styles.userIcon}
+              name={'person-outline'}
+              type={'ionicon'}
+              size={16}
+              color={'black'}
+            />
+            <ListItem.Subtitle>{item.owner}</ListItem.Subtitle>
+          </View>
         </ListItem.Content>
       </ListItem>
     );
@@ -132,7 +141,7 @@ const MainPage: FC<{
         placeholder={'Type name here...'}
         leftIcon={
           <Icon
-            name={'person-outline'}
+            name={'search-outline'}
             type={'ionicon'}
             size={24}
             color={'black'}
@@ -273,6 +282,12 @@ const styles = StyleSheet.create({
   errorMessageText: {
     color: 'red',
     textAlign: 'center',
+  },
+  userNameContainer: {
+    flexDirection: 'row',
+  },
+  userIcon: {
+    paddingRight: 5,
   },
 });
 
