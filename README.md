@@ -15,10 +15,10 @@ pod install
 ## Usage
 
 ```bash
-// To run the app on iOS:
+// To run the app on iOS
 yarn run ios
 
-// To run the app on Android:
+// To run the app on Android
 yarn run android
 ```
 

@@ -23,7 +23,6 @@ describe('search actions', () => {
       expect.assertions(1);
 
       const store = getMockStore({});
-      // @ts-ignore
       return store.dispatch(search('test')).then(() => {
         expect(store.getActions()).toEqual([
           {type: SEARCH_START, name: 'test'},
@@ -40,7 +39,6 @@ describe('search actions', () => {
       expect.assertions(1);
 
       const store = getMockStore({});
-      // @ts-ignore
       return store.dispatch(search('test')).then(() => {
         expect(store.getActions()).toEqual([
           {type: SEARCH_START, name: 'test'},
@@ -57,7 +55,6 @@ describe('search actions', () => {
       expect.assertions(1);
 
       const store = getMockStore({});
-      // @ts-ignore
       return store.dispatch(search('test')).then(() => {
         expect(store.getActions()).toEqual([
           {type: SEARCH_START, name: 'test'},
@@ -73,7 +70,6 @@ describe('search actions', () => {
       expect.assertions(1);
 
       const store = getMockStore({});
-      // @ts-ignore
       return store.dispatch(search('test')).then(() => {
         expect(store.getActions()).toEqual([
           {type: SEARCH_START, name: 'test'},

@@ -1,5 +1,6 @@
-import {Dispatch} from 'redux';
-import {AppDispatch, Dependencies, GetRootState} from '../store';
+import {ActionCreator, Dispatch} from 'redux';
+import {ThunkAction} from 'redux-thunk';
+import {AppDispatch, Dependencies, GetRootState, RootState} from '../store';
 import {
   LOAD_CONTACTS_START,
   LOAD_CONTACTS_SUCCESS,
@@ -7,8 +8,11 @@ import {
   SET_PERMISSIONS_GRANTED,
   TRACK_GRANT_ACCESS,
 } from './constants';
+import {Action} from './types';
 
-export const loadContacts =
+export const loadContacts: ActionCreator<
+  ThunkAction<Promise<void>, RootState, Dependencies, Action>
+> =
   () =>
   async (
     dispatch: Dispatch<any>,
@@ -22,7 +26,9 @@ export const loadContacts =
     }
   };
 
-const loadContactsIOS =
+const loadContactsIOS: ActionCreator<
+  ThunkAction<Promise<void>, RootState, Dependencies, Action>
+> =
   () =>
   async (
     dispatch: AppDispatch,
@@ -44,7 +50,9 @@ const loadContactsIOS =
     }
   };
 
-const loadContactsAndroid =
+const loadContactsAndroid: ActionCreator<
+  ThunkAction<Promise<void>, RootState, Dependencies, Action>
+> =
   () =>
   async (
     dispatch: AppDispatch,
@@ -73,7 +81,9 @@ const loadContactsAndroid =
     }
   };
 
-export const grantAccess =
+export const grantAccess: ActionCreator<
+  ThunkAction<Promise<void>, RootState, Dependencies, Action>
+> =
   () =>
   async (
     dispatch: Dispatch<any>,

@@ -12,8 +12,7 @@ import Contacts, {Contact} from 'react-native-contacts';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from './App';
-import {useDispatch} from 'react-redux';
-import {useAppSelector} from '../store/hooks';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
 import {grantAccess, loadContacts} from '../store/contacts/actions';
 import {
   getContacts,
@@ -31,7 +30,7 @@ const ContactsPage: FC<{
   const permissionGranted = useAppSelector(getPermissionsGranted);
   const loading = useAppSelector(getLoading);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(loadContacts());

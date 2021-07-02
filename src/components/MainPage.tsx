@@ -22,8 +22,7 @@ import {
   getSizedImageUrlForPhoto,
 } from '../store/search/selectors';
 import {Photo, PhotoSize} from '../store/search/types';
-import {useAppSelector} from '../store/hooks';
-import {useDispatch} from 'react-redux';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
 
 const MainPage: FC<{
   navigation: StackNavigationProp<RootStackParamList, 'Main'>;
@@ -40,7 +39,7 @@ const MainPage: FC<{
 
   const didMount = useRef(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onSelectContact = (contact: Contact) => {
     setName(contact.givenName);
@@ -98,9 +97,9 @@ const MainPage: FC<{
     }
   };
 
-  const onFetchPhotosPress = async () => {
+  const onFetchPhotosPress = () => {
     setPage(1);
-    await dispatch(search(name));
+    dispatch(search(name));
   };
 
   const renderFooter = () => {
