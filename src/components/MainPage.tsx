@@ -39,20 +39,12 @@ const MainPage: FC<{
   const error = useAppSelector(getError);
 
   const didMount = useRef(false);
-  const inputRef = useRef(null);
 
   const dispatch = useDispatch();
 
   const onSelectContact = (contact: Contact) => {
     setName(contact.givenName);
   };
-
-  useEffect(() => {
-    if (inputRef && inputRef.current) {
-      // @ts-ignore
-      inputRef.current.focus();
-    }
-  }, []);
 
   useEffect(() => {
     if (didMount.current) {
@@ -135,7 +127,7 @@ const MainPage: FC<{
   const renderInput = () => {
     return (
       <Input
-        ref={inputRef}
+        autoFocus
         containerStyle={{flex: 1}}
         autoCorrect={false}
         placeholder={'Type name here...'}
