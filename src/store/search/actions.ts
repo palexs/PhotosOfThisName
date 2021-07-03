@@ -23,12 +23,12 @@ import {
   TrackOpenURL,
 } from './types';
 
-const searchStart: ActionCreator<SearchStart> = (name: string) => ({
+export const searchStart: ActionCreator<SearchStart> = (name: string) => ({
   type: SEARCH_START,
   name,
 });
 
-const searchSuccess: ActionCreator<SearchSuccess> = (
+export const searchSuccess: ActionCreator<SearchSuccess> = (
   response: PhotosResponse,
 ) => ({
   type: SEARCH_SUCCESS,
@@ -36,25 +36,27 @@ const searchSuccess: ActionCreator<SearchSuccess> = (
   photos: response.photo,
 });
 
-const searchFailure: ActionCreator<SearchFailure> = (error: Error) => ({
+export const searchFailure: ActionCreator<SearchFailure> = (error: Error) => ({
   type: SEARCH_FAILURE,
   error,
 });
 
-const loadMoreStart: ActionCreator<LoadMoreStart> = () => ({
+export const loadMoreStart: ActionCreator<LoadMoreStart> = () => ({
   type: LOAD_MORE_START,
 });
 
-const loadMoreSuccess: ActionCreator<LoadMoreSuccess> = (
+export const loadMoreSuccess: ActionCreator<LoadMoreSuccess> = (
   response: PhotosResponse,
 ) => ({type: LOAD_MORE_SUCCESS, photos: response.photo});
 
-const loadMoreFailure: ActionCreator<LoadMoreFailure> = (error: Error) => ({
+export const loadMoreFailure: ActionCreator<LoadMoreFailure> = (
+  error: Error,
+) => ({
   type: LOAD_MORE_FAILURE,
   error,
 });
 
-const trackOpenURL: ActionCreator<TrackOpenURL> = (url: string) => ({
+export const trackOpenURL: ActionCreator<TrackOpenURL> = (url: string) => ({
   type: TRACK_OPEN_URL,
   url,
 });
