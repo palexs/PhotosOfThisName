@@ -1,4 +1,7 @@
 import {Contact} from 'react-native-contacts';
+import {ActionCreator} from 'redux';
+import {ThunkAction} from 'redux-thunk';
+import {Dependencies, RootState} from '../types';
 import {
   LOAD_CONTACTS_START,
   LOAD_CONTACTS_SUCCESS,
@@ -43,3 +46,7 @@ export type Action =
   | LoadContactsFailure
   | SetPermissionsGranted
   | TrackGrantAccess;
+
+export type ThunkActionCreator = ActionCreator<
+  ThunkAction<Promise<void>, RootState, Dependencies, Action>
+>;

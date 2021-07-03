@@ -1,3 +1,6 @@
+import {ActionCreator} from 'redux';
+import {ThunkAction} from 'redux-thunk';
+import {Dependencies, RootState} from '../types';
 import {
   SEARCH_START,
   SEARCH_SUCCESS,
@@ -94,3 +97,7 @@ export type Action =
   | LoadMoreSuccessAction
   | LoadMoreFailureAction
   | TrackOpenURL;
+
+export type ThunkActionCreator = ActionCreator<
+  ThunkAction<Promise<void>, RootState, Dependencies, Action>
+>;

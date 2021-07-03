@@ -1,5 +1,5 @@
 import {Photo, PhotoSize} from './types';
-import {RootState} from '../store';
+import {RootState} from '../types';
 
 export const getQuery = (state: RootState) => state.search.query;
 

@@ -6,15 +6,9 @@ import Contacts from 'react-native-contacts';
 import searchReducer from './search/reducer';
 import contactsReducer from './contacts/reducer';
 import analyticsMiddleware from '../middleware/analytics';
+import {Dependencies} from './types';
 
-export interface Dependencies {
-  Linking: typeof Linking;
-  Contacts: typeof Contacts;
-  PermissionsAndroid: typeof PermissionsAndroid;
-  Platform: typeof Platform;
-}
-
-const dependencies = {
+const dependencies: Dependencies = {
   Linking,
   Contacts,
   PermissionsAndroid,
@@ -36,9 +30,5 @@ const store = createStore(
   }),
   applyMiddleware(...middlewares),
 );
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export type GetRootState = () => RootState;
 
 export default store;
