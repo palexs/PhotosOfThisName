@@ -55,47 +55,47 @@ export interface SearchState {
   totalPages: number;
 }
 
-interface SearchStartAction {
+export interface SearchStart {
   type: typeof SEARCH_START;
   name: string;
 }
 
-interface SearchSuccessAction {
+export interface SearchSuccess {
   type: typeof SEARCH_SUCCESS;
   totalPages: number;
   photos: Photo[];
 }
 
-interface SearchFailureAction {
+export interface SearchFailure {
   type: typeof SEARCH_FAILURE;
   error: Error;
 }
 
-interface LoadMoreStartAction {
+export interface LoadMoreStart {
   type: typeof LOAD_MORE_START;
 }
 
-interface LoadMoreSuccessAction {
+export interface LoadMoreSuccess {
   type: typeof LOAD_MORE_SUCCESS;
   photos: Photo[];
 }
 
-interface LoadMoreFailureAction {
+export interface LoadMoreFailure {
   type: typeof LOAD_MORE_FAILURE;
   error: Error;
 }
 
-interface TrackOpenURL {
+export interface TrackOpenURL {
   type: typeof TRACK_OPEN_URL;
 }
 
 export type Action =
-  | SearchStartAction
-  | SearchSuccessAction
-  | SearchFailureAction
-  | LoadMoreStartAction
-  | LoadMoreSuccessAction
-  | LoadMoreFailureAction
+  | SearchStart
+  | SearchSuccess
+  | SearchFailure
+  | LoadMoreStart
+  | LoadMoreSuccess
+  | LoadMoreFailure
   | TrackOpenURL;
 
 export type ThunkActionCreator = ActionCreator<

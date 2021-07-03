@@ -17,26 +17,26 @@ export interface ContactsState {
   error: Error | null;
 }
 
-interface LoadContactsStart {
+export interface LoadContactsStart {
   type: typeof LOAD_CONTACTS_START;
 }
 
-interface LoadContactsSuccess {
+export interface LoadContactsSuccess {
   type: typeof LOAD_CONTACTS_SUCCESS;
   contacts: Contact[];
 }
 
-interface LoadContactsFailure {
+export interface LoadContactsFailure {
   type: typeof LOAD_CONTACTS_FAILURE;
   error: Error;
 }
 
-interface SetPermissionsGranted {
+export interface SetPermissionsGranted {
   type: typeof SET_PERMISSIONS_GRANTED;
   granted: boolean;
 }
 
-interface TrackGrantAccess {
+export interface TrackGrantAccess {
   type: typeof TRACK_GRANT_ACCESS;
 }
 

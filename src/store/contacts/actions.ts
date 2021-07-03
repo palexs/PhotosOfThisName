@@ -1,4 +1,5 @@
-import {Dispatch} from 'redux';
+import {ActionCreator, Dispatch} from 'redux';
+import {Contact} from 'react-native-contacts';
 import {AppDispatch, Dependencies, GetRootState} from '../types';
 import {
   LOAD_CONTACTS_START,
@@ -7,7 +8,40 @@ import {
   SET_PERMISSIONS_GRANTED,
   TRACK_GRANT_ACCESS,
 } from './constants';
-import {ThunkActionCreator} from './types';
+import {
+  LoadContactsFailure,
+  LoadContactsStart,
+  LoadContactsSuccess,
+  SetPermissionsGranted,
+  ThunkActionCreator,
+  TrackGrantAccess,
+} from './types';
+
+const loadContactsStart: ActionCreator<LoadContactsStart> = () => ({
+  type: LOAD_CONTACTS_START,
+});
+
+const loadContactsSuccess: ActionCreator<LoadContactsSuccess> = (
+  contacts: Contact[],
+) => ({
+  type: LOAD_CONTACTS_SUCCESS,
+  contacts,
+});
+
+const loadContactsFailure: ActionCreator<LoadContactsFailure> = (
+  error: Error,
+) => ({type: LOAD_CONTACTS_FAILURE, error});
+
+const setPermissionsGranted: ActionCreator<SetPermissionsGranted> = (
+  granted: boolean,
+) => ({
+  type: SET_PERMISSIONS_GRANTED,
+  granted,
+});
+
+const trackGrantAccess: ActionCreator<TrackGrantAccess> = () => ({
+  type: TRACK_GRANT_ACCESS,
+});
 
 export const loadContacts: ThunkActionCreator =
   () =>
@@ -30,18 +64,18 @@ const loadContactsIOS: ThunkActionCreator =
     getState: GetRootState,
     {Contacts}: Dependencies,
   ) => {
-    dispatch({type: LOAD_CONTACTS_START});
+    dispatch(loadContactsStart());
     const permissionStatus = await Contacts.requestPermission();
     if (permissionStatus === 'authorized') {
       try {
         const contacts = await Contacts.getAll();
-        dispatch({type: LOAD_CONTACTS_SUCCESS, contacts});
+        dispatch(loadContactsSuccess(contacts));
       } catch (error) {
-        dispatch({type: LOAD_CONTACTS_FAILURE, error});
+        dispatch(loadContactsFailure());
       }
-      dispatch({type: SET_PERMISSIONS_GRANTED, granted: true});
+      dispatch(setPermissionsGranted(true));
     } else {
-      dispatch({type: SET_PERMISSIONS_GRANTED, granted: false});
+      dispatch(setPermissionsGranted(false));
     }
   };
 
@@ -52,7 +86,7 @@ const loadContactsAndroid: ThunkActionCreator =
     getState: GetRootState,
     {Contacts, PermissionsAndroid}: Dependencies,
   ) => {
-    dispatch({type: LOAD_CONTACTS_START});
+    dispatch(loadContactsStart());
     const permissionStatus = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
       {
@@ -64,13 +98,13 @@ const loadContactsAndroid: ThunkActionCreator =
     if (permissionStatus === 'granted') {
       try {
         const contacts = await Contacts.getAll();
-        dispatch({type: LOAD_CONTACTS_SUCCESS, contacts});
+        dispatch(loadContactsSuccess(contacts));
       } catch (error) {
-        dispatch({type: LOAD_CONTACTS_FAILURE, error});
+        dispatch(loadContactsFailure(error));
       }
-      dispatch({type: SET_PERMISSIONS_GRANTED, granted: true});
+      dispatch(setPermissionsGranted(true));
     } else {
-      dispatch({type: SET_PERMISSIONS_GRANTED, granted: false});
+      dispatch(setPermissionsGranted(false));
     }
   };
 
@@ -82,5 +116,5 @@ export const grantAccess: ThunkActionCreator =
     {Linking}: Dependencies,
   ) => {
     await Linking.openSettings();
-    dispatch({type: TRACK_GRANT_ACCESS});
+    dispatch(trackGrantAccess());
   };
