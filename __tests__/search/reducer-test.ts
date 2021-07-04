@@ -186,4 +186,20 @@ describe('search reducer', () => {
     const outputState = reducer(inputState, action);
     expect(outputState).toEqual(expectedState);
   });
+
+  it('DEFAULT case', () => {
+    expect.assertions(1);
+
+    const inputState = {
+      query: 'test',
+      fetching: false,
+      loadingMore: true,
+      data: [],
+      error: null,
+      totalPages: 10,
+    };
+    // @ts-ignore
+    const outputState = reducer(inputState, {type: 'SOME_OTHER_ACTION'});
+    expect(outputState).toEqual(inputState);
+  });
 });
