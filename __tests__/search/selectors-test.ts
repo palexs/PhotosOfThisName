@@ -8,7 +8,7 @@ import {
   getSizedImageUrlForPhoto,
   getTotalPages,
 } from '../../src/store/search/selectors';
-import {RootState} from '../../src/store/store';
+import {RootState} from '../../src/store/types';
 
 describe('search selectors', () => {
   const photo: Photo = {
