@@ -12,6 +12,7 @@ import {
   GET_LOCATION_START,
   GET_LOCATION_SUCCESS,
   GET_LOCATION_FAILURE,
+  TRACK_OPEN_URL_FAILURE,
 } from './constants';
 import {
   Action,
@@ -28,6 +29,7 @@ import {
   SearchSuccess,
   ThunkActionCreator,
   TrackOpenURL,
+  TrackOpenURLFailure,
 } from './types';
 import {getQuery} from './selectors';
 
@@ -94,6 +96,13 @@ export const trackOpenURL: ActionCreator<TrackOpenURL> = (url: string) => ({
   url,
 });
 
+export const trackOpenURLFailure: ActionCreator<TrackOpenURLFailure> = (
+  error: Error,
+) => ({
+  type: TRACK_OPEN_URL_FAILURE,
+  error,
+});
+
 export const search: ThunkActionCreator =
   (name: string) => async (dispatch: Dispatch<Action>) => {
     dispatch(searchStart(name));
@@ -133,13 +142,22 @@ export const openURL: ThunkActionCreator =
   async (
     dispatch: AppDispatch,
     getState: GetRootState,
-    {Linking}: Dependencies,
+    {Linking, Alert}: Dependencies,
   ) => {
     const isSupported = await Linking.canOpenURL(url);
     if (isSupported) {
-      await Linking.openURL(url);
-      dispatch(trackOpenURL(url));
+      try {
+        await Linking.openURL('url');
+        dispatch(trackOpenURL(url));
+      } catch (error) {
+        dispatch(trackOpenURLFailure(error));
+      }
     } else {
-      console.warn(`Can't open URI: ${url}`);
+      Alert.alert('URI not supported', `Can't open URI: ${url}`, [
+        {
+          text: 'Ok',
+          style: 'cancel',
+        },
+      ]);
     }
   };

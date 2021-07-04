@@ -12,6 +12,7 @@ import {
   GET_LOCATION_SUCCESS,
   GET_LOCATION_FAILURE,
   TRACK_OPEN_URL,
+  TRACK_OPEN_URL_FAILURE,
 } from './constants';
 
 type NumericBool = 0 | 1;
@@ -145,6 +146,11 @@ export interface TrackOpenURL {
   type: typeof TRACK_OPEN_URL;
 }
 
+export interface TrackOpenURLFailure {
+  type: typeof TRACK_OPEN_URL_FAILURE;
+  error: Error;
+}
+
 export type Action =
   | SearchStart
   | SearchSuccess
@@ -155,7 +161,8 @@ export type Action =
   | GetLocationStart
   | GetLocationSuccess
   | GetLocationFailure
-  | TrackOpenURL;
+  | TrackOpenURL
+  | TrackOpenURLFailure;
 
 export type ThunkActionCreator = ActionCreator<
   ThunkAction<Promise<void>, RootState, Dependencies, Action>

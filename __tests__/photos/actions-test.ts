@@ -8,6 +8,7 @@ import {
   LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILURE,
   TRACK_OPEN_URL,
+  TRACK_OPEN_URL_FAILURE,
 } from '../../src/store/photos/constants';
 import {
   loadMore,
@@ -250,16 +251,39 @@ describe('thunk actions', () => {
     });
 
     it('does not support URL', () => {
-      expect.assertions(1);
+      expect.assertions(2);
       const url = 'https://test.com';
+      const alertMock = jest.fn();
 
       const store = getMockStore({
         Linking: {
           canOpenURL: jest.fn(() => Promise.resolve(false)),
         },
+        Alert: {
+          alert: alertMock,
+        },
       });
       return store.dispatch(openURL(url)).then(() => {
         expect(store.getActions()).toEqual([]);
+        expect(alertMock).toBeCalled();
+      });
+    });
+
+    it('fails to open URL', () => {
+      expect.assertions(1);
+      const url = 'test.com';
+      const error = Error('Not supported URI.');
+
+      const store = getMockStore({
+        Linking: {
+          canOpenURL: jest.fn(() => Promise.resolve(true)),
+          openURL: jest.fn(() => Promise.reject(error)),
+        },
+      });
+      return store.dispatch(openURL(url)).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: TRACK_OPEN_URL_FAILURE, error},
+        ]);
       });
     });
   });

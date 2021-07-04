@@ -1,5 +1,5 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux';
-import {Linking, PermissionsAndroid, Platform} from 'react-native';
+import {Linking, PermissionsAndroid, Platform, Alert} from 'react-native';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import Contacts from 'react-native-contacts';
@@ -13,6 +13,7 @@ const dependencies: Dependencies = {
   Contacts,
   PermissionsAndroid,
   Platform,
+  Alert,
 };
 
 const middlewares: any[] = [

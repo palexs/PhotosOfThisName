@@ -1,5 +1,5 @@
 import {ThunkDispatch} from 'redux-thunk';
-import {Linking, PermissionsAndroid, Platform} from 'react-native';
+import {Linking, PermissionsAndroid, Platform, Alert} from 'react-native';
 import Contacts from 'react-native-contacts';
 import store from './store';
 import {Action as SearchAction} from './photos/types';
@@ -10,6 +10,7 @@ export interface Dependencies {
   Contacts: typeof Contacts;
   PermissionsAndroid: typeof PermissionsAndroid;
   Platform: typeof Platform;
+  Alert: typeof Alert;
 }
 
 export type RootState = ReturnType<typeof store.getState>;
