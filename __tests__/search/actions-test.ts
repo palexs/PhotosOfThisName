@@ -85,11 +85,10 @@ describe('search thunk actions', () => {
     });
 
     it('success', () => {
+      expect.assertions(1);
       fetchMock.mockResponse(
         JSON.stringify({stat: 'ok', photos: {pages: 1, photo: []}}),
       );
-
-      expect.assertions(1);
 
       const store = getMockStore({});
       return store.dispatch(search('test')).then(() => {
@@ -101,11 +100,10 @@ describe('search thunk actions', () => {
     });
 
     it('failure - status fail', () => {
+      expect.assertions(1);
       fetchMock.mockResponse(JSON.stringify({stat: 'fail', photos: {}}));
 
       const expectedError = Error('Unknown error occurred.');
-
-      expect.assertions(1);
 
       const store = getMockStore({});
       return store.dispatch(search('test')).then(() => {
@@ -117,11 +115,10 @@ describe('search thunk actions', () => {
     });
 
     it('failure - status code 500', () => {
+      expect.assertions(1);
       fetchMock.mockResponse('', {status: 500});
 
       const expectedError = Error('Data is unavailable. Response status: 500');
-
-      expect.assertions(1);
 
       const store = getMockStore({});
       return store.dispatch(search('test')).then(() => {
@@ -133,10 +130,9 @@ describe('search thunk actions', () => {
     });
 
     it('failure - error', () => {
+      expect.assertions(1);
       const expectedError = Error('Server error.');
       fetchMock.mockReject(expectedError);
-
-      expect.assertions(1);
 
       const store = getMockStore({});
       return store.dispatch(search('test')).then(() => {
