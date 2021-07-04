@@ -10,6 +10,7 @@ import {
   TRACK_OPEN_URL,
 } from '../../src/store/search/constants';
 import {
+  loadMore,
   loadMoreFailure,
   loadMoreStart,
   loadMoreSuccess,
@@ -21,7 +22,6 @@ import {
   trackOpenURL,
 } from '../../src/store/search/actions';
 import {PhotosResponse} from '../../src/store/search/types';
-import {Linking} from 'react-native';
 
 fetchMock.enableMocks();
 
@@ -80,7 +80,7 @@ describe('search action creators', () => {
   });
 });
 
-describe('search thunk action', () => {
+describe('thunk actions', () => {
   describe('search', () => {
     beforeEach(() => {
       fetchMock.resetMocks();
@@ -145,35 +145,122 @@ describe('search thunk action', () => {
       });
     });
   });
-});
 
-describe('openURL thunk action', () => {
-  it('supports URL', () => {
-    expect.assertions(1);
-    const url = 'https://test.com';
-
-    const store = getMockStore({
-      Linking: {
-        canOpenURL: jest.fn(() => Promise.resolve(true)),
-        openURL: jest.fn(() => Promise.resolve()),
-      },
+  describe('loadMore', () => {
+    beforeEach(() => {
+      fetchMock.resetMocks();
     });
-    return store.dispatch(openURL(url)).then(() => {
-      expect(store.getActions()).toEqual([{type: TRACK_OPEN_URL, url}]);
+
+    it('success', () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(JSON.stringify({stat: 'ok', photos: {photo: []}}));
+
+      const store = getMockStore({
+        state: {
+          search: {
+            query: 'test',
+          },
+        },
+      });
+      return store.dispatch(loadMore(2)).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: LOAD_MORE_START},
+          {type: LOAD_MORE_SUCCESS, photos: []},
+        ]);
+      });
+    });
+
+    it('failure - status fail', () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(JSON.stringify({stat: 'fail', photos: {}}));
+
+      const expectedError = Error('Unknown error occurred.');
+
+      const store = getMockStore({
+        state: {
+          search: {
+            query: 'test',
+          },
+        },
+      });
+      return store.dispatch(loadMore(2)).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: LOAD_MORE_START},
+          {type: LOAD_MORE_FAILURE, error: expectedError},
+        ]);
+      });
+    });
+
+    it('failure - status code 500', () => {
+      expect.assertions(1);
+      fetchMock.mockResponse('', {status: 500});
+
+      const expectedError = Error('Data is unavailable. Response status: 500');
+
+      const store = getMockStore({
+        state: {
+          search: {
+            query: 'test',
+          },
+        },
+      });
+      return store.dispatch(loadMore(2)).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: LOAD_MORE_START},
+          {type: LOAD_MORE_FAILURE, error: expectedError},
+        ]);
+      });
+    });
+
+    it('failure - error', () => {
+      expect.assertions(1);
+      const expectedError = Error('Server error.');
+      fetchMock.mockReject(expectedError);
+
+      const store = getMockStore({
+        state: {
+          search: {
+            query: 'test',
+          },
+        },
+      });
+      return store.dispatch(loadMore(2)).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: LOAD_MORE_START},
+          {type: LOAD_MORE_FAILURE, error: expectedError},
+        ]);
+      });
     });
   });
 
-  it('does not support URL', () => {
-    expect.assertions(1);
-    const url = 'https://test.com';
+  describe('openURL', () => {
+    it('supports URL', () => {
+      expect.assertions(1);
+      const url = 'https://test.com';
 
-    const store = getMockStore({
-      Linking: {
-        canOpenURL: jest.fn(() => Promise.resolve(false)),
-      },
+      const store = getMockStore({
+        Linking: {
+          canOpenURL: jest.fn(() => Promise.resolve(true)),
+          openURL: jest.fn(() => Promise.resolve()),
+        },
+      });
+      return store.dispatch(openURL(url)).then(() => {
+        expect(store.getActions()).toEqual([{type: TRACK_OPEN_URL, url}]);
+      });
     });
-    return store.dispatch(openURL(url)).then(() => {
-      expect(store.getActions()).toEqual([]);
+
+    it('does not support URL', () => {
+      expect.assertions(1);
+      const url = 'https://test.com';
+
+      const store = getMockStore({
+        Linking: {
+          canOpenURL: jest.fn(() => Promise.resolve(false)),
+        },
+      });
+      return store.dispatch(openURL(url)).then(() => {
+        expect(store.getActions()).toEqual([]);
+      });
     });
   });
 });
