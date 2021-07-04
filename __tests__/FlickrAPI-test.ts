@@ -1,5 +1,5 @@
 import fetchMock from 'jest-fetch-mock';
-import {fetchPhotos} from '../src/FlickrAPI';
+import {fetchPhotos, fetchPhotoLocation} from '../src/FlickrAPI';
 
 fetchMock.enableMocks();
 
@@ -48,6 +48,56 @@ describe('Flickr API', () => {
 
       try {
         await fetchPhotos('test', 1);
+      } catch (error) {
+        expect(error).toEqual(
+          Error('Data is unavailable. Response status: 500'),
+        );
+      }
+    });
+  });
+
+  describe('fetchPhotoLocation', () => {
+    beforeEach(() => {
+      fetchMock.resetMocks();
+    });
+
+    it('correct url', async () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(JSON.stringify({stat: 'ok', photo: {}}));
+
+      await fetchPhotoLocation('12345');
+
+      expect(fetchMock.mock.calls[0][0]).toBe(
+        'https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key=e9ed25c3cad22a3ab90a4a1c15dc9dec&photo_id=12345&format=json&nojsoncallback=1',
+      );
+    });
+
+    it('success', async () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(JSON.stringify({stat: 'ok', photo: {foo: 'bar'}}));
+
+      const response = await fetchPhotoLocation('12345');
+
+      expect(response).toEqual({foo: 'bar'});
+    });
+
+    it('failure - status fail', async () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(JSON.stringify({stat: 'fail'}));
+
+      try {
+        await fetchPhotoLocation('12345');
+      } catch (error) {
+        expect(error).toEqual(Error('Unknown error occurred.'));
+      }
+    });
+
+    it('failure - status code 500', async () => {
+      expect.assertions(1);
+      fetchMock.mockResponse('', {status: 500});
+
+      try {
+        await fetchPhotoLocation('12345');
       } catch (error) {
         expect(error).toEqual(
           Error('Data is unavailable. Response status: 500'),
