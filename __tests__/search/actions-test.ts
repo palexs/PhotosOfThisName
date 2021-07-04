@@ -13,6 +13,7 @@ import {
   loadMoreFailure,
   loadMoreStart,
   loadMoreSuccess,
+  openURL,
   search,
   searchFailure,
   searchStart,
@@ -20,6 +21,7 @@ import {
   trackOpenURL,
 } from '../../src/store/search/actions';
 import {PhotosResponse} from '../../src/store/search/types';
+import {Linking} from 'react-native';
 
 fetchMock.enableMocks();
 
@@ -78,7 +80,7 @@ describe('search action creators', () => {
   });
 });
 
-describe('search thunk actions', () => {
+describe('search thunk action', () => {
   describe('search', () => {
     beforeEach(() => {
       fetchMock.resetMocks();
@@ -141,6 +143,37 @@ describe('search thunk actions', () => {
           {type: SEARCH_FAILURE, error: expectedError},
         ]);
       });
+    });
+  });
+});
+
+describe('openURL thunk action', () => {
+  it('supports URL', () => {
+    expect.assertions(1);
+    const url = 'https://test.com';
+
+    const store = getMockStore({
+      Linking: {
+        canOpenURL: jest.fn(() => Promise.resolve(true)),
+        openURL: jest.fn(() => Promise.resolve()),
+      },
+    });
+    return store.dispatch(openURL(url)).then(() => {
+      expect(store.getActions()).toEqual([{type: TRACK_OPEN_URL, url}]);
+    });
+  });
+
+  it('does not support URL', () => {
+    expect.assertions(1);
+    const url = 'https://test.com';
+
+    const store = getMockStore({
+      Linking: {
+        canOpenURL: jest.fn(() => Promise.resolve(false)),
+      },
+    });
+    return store.dispatch(openURL(url)).then(() => {
+      expect(store.getActions()).toEqual([]);
     });
   });
 });

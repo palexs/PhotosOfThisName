@@ -1,9 +1,8 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {RootState} from '../src/store/store';
-import {AppDispatch} from '../src/store/hooks';
+import {RootState, AppDispatch} from '../src/store/types';
 
-const getMockStore = ({state = {}, ...extraArguments}: {state?: any}) => {
+const getMockStore = ({state = {}, ...extraArguments}: any) => {
   const middlewares = [thunk.withExtraArgument(extraArguments)];
   return configureMockStore<RootState, AppDispatch>(middlewares)(state);
 };
