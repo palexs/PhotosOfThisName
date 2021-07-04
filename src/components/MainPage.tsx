@@ -11,7 +11,7 @@ import {Button, Icon, Input} from 'react-native-elements';
 import {Contact} from 'react-native-contacts';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from './App';
-import {search, loadMore, openURL} from '../store/search/actions';
+import {search, loadMore, openURL} from '../store/photos/actions';
 import {
   getQuery,
   getFetching,
@@ -20,8 +20,8 @@ import {
   getError,
   getData,
   getSizedImageUrlForPhoto,
-} from '../store/search/selectors';
-import {Photo, PhotoSize} from '../store/search/types';
+} from '../store/photos/selectors';
+import {Photo, PhotoSize} from '../store/photos/types';
 import {useAppDispatch, useAppSelector} from '../store/hooks';
 import PhotoItem from './ListItem';
 

@@ -1,16 +1,19 @@
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import React, {FC, useEffect} from 'react';
-import {Photo, PhotoSize} from '../store/search/types';
-import {getLocation} from '../store/search/actions';
+import {Photo, PhotoSize} from '../store/photos/types';
+import {getLocation} from '../store/photos/actions';
 import {Icon, Image, ListItem} from 'react-native-elements';
-import {getSizedImageUrlForPhoto, getCountry} from '../store/search/selectors';
+import {
+  getSizedImageUrlForPhoto,
+  getPhotoLocation,
+} from '../store/photos/selectors';
 import {useAppDispatch, useAppSelector} from '../store/hooks';
 
 const PhotoItem: FC<{
   item: Photo;
   onItemPress: (item: Photo) => void;
 }> = ({item, onItemPress}) => {
-  const location = useAppSelector(state => getCountry(state, item.id));
+  const location = useAppSelector(state => getPhotoLocation(state, item.id));
 
   const dispatch = useAppDispatch();
 

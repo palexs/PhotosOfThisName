@@ -80,7 +80,7 @@ export interface PhotoLocation {
   error: Error | null;
 }
 
-export interface SearchState {
+export interface PhotosState {
   query: string;
   fetching: boolean;
   loadingMore: boolean;

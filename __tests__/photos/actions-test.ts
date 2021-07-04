@@ -8,7 +8,7 @@ import {
   LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILURE,
   TRACK_OPEN_URL,
-} from '../../src/store/search/constants';
+} from '../../src/store/photos/constants';
 import {
   loadMore,
   loadMoreFailure,
@@ -20,8 +20,8 @@ import {
   searchStart,
   searchSuccess,
   trackOpenURL,
-} from '../../src/store/search/actions';
-import {PhotosResponse} from '../../src/store/search/types';
+} from '../../src/store/photos/actions';
+import {PhotosResponse} from '../../src/store/photos/types';
 
 fetchMock.enableMocks();
 
@@ -157,7 +157,7 @@ describe('thunk actions', () => {
 
       const store = getMockStore({
         state: {
-          search: {
+          photos: {
             query: 'test',
           },
         },
@@ -178,7 +178,7 @@ describe('thunk actions', () => {
 
       const store = getMockStore({
         state: {
-          search: {
+          photos: {
             query: 'test',
           },
         },
@@ -199,7 +199,7 @@ describe('thunk actions', () => {
 
       const store = getMockStore({
         state: {
-          search: {
+          photos: {
             query: 'test',
           },
         },
@@ -219,7 +219,7 @@ describe('thunk actions', () => {
 
       const store = getMockStore({
         state: {
-          search: {
+          photos: {
             query: 'test',
           },
         },

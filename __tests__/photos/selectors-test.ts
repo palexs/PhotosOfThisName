@@ -1,4 +1,4 @@
-import {Photo, PhotoSize} from '../../src/store/search/types';
+import {Photo, PhotoSize} from '../../src/store/photos/types';
 import {
   getData,
   getError,
@@ -7,7 +7,8 @@ import {
   getQuery,
   getSizedImageUrlForPhoto,
   getTotalPages,
-} from '../../src/store/search/selectors';
+  getPhotoLocation,
+} from '../../src/store/photos/selectors';
 import {RootState} from '../../src/store/types';
 
 describe('search selectors', () => {
@@ -26,11 +27,18 @@ describe('search selectors', () => {
   const error = Error('Test error');
 
   const state: RootState = {
-    search: {
+    photos: {
       query: 'test',
       fetching: false,
       loadingMore: true,
       data: [photo],
+      locations: {
+        '12345': {
+          loading: false,
+          country: 'Ukraine',
+          error: null,
+        },
+      },
       error,
       totalPages: 10,
     },
@@ -66,6 +74,15 @@ describe('search selectors', () => {
   it('getError', () => {
     expect.assertions(1);
     expect(getError(state)).toEqual(error);
+  });
+
+  it('getCountry', () => {
+    expect.assertions(1);
+    expect(getPhotoLocation(state, '12345')).toEqual({
+      loading: false,
+      country: 'Ukraine',
+      error: null,
+    });
   });
 
   it('getSizedImageUrlForPhoto', () => {

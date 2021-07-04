@@ -1,4 +1,4 @@
-import {PhotosResponse, PhotoLocationResponse} from './store/search/types';
+import {PhotosResponse, PhotoLocationResponse} from './store/photos/types';
 
 const API_KEY = 'e9ed25c3cad22a3ab90a4a1c15dc9dec';
 const BASE_URL = 'https://api.flickr.com/services/rest/';

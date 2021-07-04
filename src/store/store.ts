@@ -3,7 +3,7 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import Contacts from 'react-native-contacts';
-import searchReducer from './search/reducer';
+import photosReducer from './photos/reducer';
 import contactsReducer from './contacts/reducer';
 import analyticsMiddleware from '../middleware/analytics';
 import {Dependencies} from './types';
@@ -26,7 +26,7 @@ if (__DEV__) {
 const store = createStore(
   combineReducers({
     contacts: contactsReducer,
-    search: searchReducer,
+    photos: photosReducer,
   }),
   applyMiddleware(...middlewares),
 );

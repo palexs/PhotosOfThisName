@@ -2,7 +2,7 @@ import {ThunkDispatch} from 'redux-thunk';
 import {Linking, PermissionsAndroid, Platform} from 'react-native';
 import Contacts from 'react-native-contacts';
 import store from './store';
-import {Action as SearchAction} from './search/types';
+import {Action as SearchAction} from './photos/types';
 import {Action as ContactAction} from './contacts/types';
 
 export interface Dependencies {

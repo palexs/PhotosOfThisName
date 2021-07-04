@@ -1,4 +1,4 @@
-import {Action, SearchState} from './types';
+import {Action, PhotosState} from './types';
 import {
   SEARCH_START,
   SEARCH_SUCCESS,
@@ -11,7 +11,7 @@ import {
   GET_LOCATION_START,
 } from './constants';
 
-const initialState: SearchState = {
+const initialState: PhotosState = {
   query: '',
   fetching: false,
   loadingMore: false,
@@ -21,7 +21,7 @@ const initialState: SearchState = {
   locations: {},
 };
 
-const reducer = (state: SearchState = initialState, action: Action) => {
+const reducer = (state: PhotosState = initialState, action: Action) => {
   switch (action.type) {
     case SEARCH_START: {
       const {name} = action;
@@ -101,6 +101,7 @@ const reducer = (state: SearchState = initialState, action: Action) => {
           [photoID]: {
             loading: false,
             country,
+            error: null,
           },
         },
       };
