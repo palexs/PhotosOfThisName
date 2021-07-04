@@ -8,6 +8,9 @@ import {
   LOAD_MORE_START,
   LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILURE,
+  GET_LOCATION_START,
+  GET_LOCATION_SUCCESS,
+  GET_LOCATION_FAILURE,
   TRACK_OPEN_URL,
 } from './constants';
 
@@ -33,6 +36,31 @@ export interface PhotosResponse {
   photo: Photo[];
 }
 
+export interface PhotoLocationResponse {
+  id: string;
+  location: {
+    latitude: string;
+    longitude: string;
+    accuracy: string;
+    context: string;
+    locality: {
+      _content: string;
+    };
+    county: {
+      _content: string;
+    };
+    region: {
+      _content: string;
+    };
+    country: {
+      _content: string;
+    };
+    neighbourhood: {
+      _content: string;
+    };
+  };
+}
+
 export enum PhotoSize {
   thumbnail75 = 's',
   thumbnail100 = 't',
@@ -46,6 +74,12 @@ export enum PhotoSize {
   large2048 = 'k',
 }
 
+export interface PhotoLocation {
+  loading: boolean;
+  country: string | null;
+  error: Error | null;
+}
+
 export interface SearchState {
   query: string;
   fetching: boolean;
@@ -53,6 +87,11 @@ export interface SearchState {
   data: Photo[];
   error: Error | null;
   totalPages: number;
+  locations:
+    | {
+        [photoID: string]: PhotoLocation;
+      }
+    | {};
 }
 
 export interface SearchStart {
@@ -85,6 +124,23 @@ export interface LoadMoreFailure {
   error: Error;
 }
 
+export interface GetLocationStart {
+  type: typeof GET_LOCATION_START;
+  photoID: string;
+}
+
+export interface GetLocationSuccess {
+  type: typeof GET_LOCATION_SUCCESS;
+  country: string;
+  photoID: string;
+}
+
+export interface GetLocationFailure {
+  type: typeof GET_LOCATION_FAILURE;
+  error: Error;
+  photoID: string;
+}
+
 export interface TrackOpenURL {
   type: typeof TRACK_OPEN_URL;
 }
@@ -96,6 +152,9 @@ export type Action =
   | LoadMoreStart
   | LoadMoreSuccess
   | LoadMoreFailure
+  | GetLocationStart
+  | GetLocationSuccess
+  | GetLocationFailure
   | TrackOpenURL;
 
 export type ThunkActionCreator = ActionCreator<

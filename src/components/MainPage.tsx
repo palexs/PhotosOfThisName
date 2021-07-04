@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import {Button, Icon, Input, ListItem, Image} from 'react-native-elements';
+import {Button, Icon, Input} from 'react-native-elements';
 import {Contact} from 'react-native-contacts';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from './App';
@@ -23,6 +23,7 @@ import {
 } from '../store/search/selectors';
 import {Photo, PhotoSize} from '../store/search/types';
 import {useAppDispatch, useAppSelector} from '../store/hooks';
+import PhotoItem from './ListItem';
 
 const MainPage: FC<{
   navigation: StackNavigationProp<RootStackParamList, 'Main'>;
@@ -62,33 +63,7 @@ const MainPage: FC<{
   };
 
   const renderItem = ({item}: {item: Photo}) => {
-    return (
-      <ListItem
-        key={item.id}
-        bottomDivider
-        style={styles.listItem}
-        onPress={() => onItemPress(item)}>
-        <Image
-          style={styles.thumbnailImage}
-          source={{
-            uri: getSizedImageUrlForPhoto(item, PhotoSize.small240),
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>{item.title}</ListItem.Title>
-          <View style={styles.userNameContainer}>
-            <Icon
-              style={styles.userIcon}
-              name={'person-outline'}
-              type={'ionicon'}
-              size={16}
-              color={'black'}
-            />
-            <ListItem.Subtitle>{item.owner}</ListItem.Subtitle>
-          </View>
-        </ListItem.Content>
-      </ListItem>
-    );
+    return <PhotoItem item={item} onItemPress={onItemPress} />;
   };
 
   const onEndReached = () => {
@@ -233,10 +208,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 20,
   },
-  thumbnailImage: {
-    width: 60,
-    height: 60,
-  },
   contactsButton: {
     paddingTop: 5,
   },
@@ -254,9 +225,6 @@ const styles = StyleSheet.create({
   },
   photosList: {
     marginVertical: 10,
-  },
-  listItem: {
-    marginHorizontal: 10,
   },
   emptyListContainer: {
     flex: 1,
@@ -277,12 +245,6 @@ const styles = StyleSheet.create({
   errorMessageText: {
     color: 'red',
     textAlign: 'center',
-  },
-  userNameContainer: {
-    flexDirection: 'row',
-  },
-  userIcon: {
-    paddingRight: 5,
   },
 });
 

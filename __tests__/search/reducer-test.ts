@@ -42,6 +42,7 @@ describe('search reducer', () => {
       fetching: false,
       loadingMore: false,
       data: [],
+      locations: {},
       error: null,
       totalPages: 0,
     };
@@ -50,6 +51,7 @@ describe('search reducer', () => {
       fetching: true,
       loadingMore: false,
       data: [],
+      locations: {},
       error: null,
       totalPages: 0,
     };
@@ -95,6 +97,7 @@ describe('search reducer', () => {
       fetching: true,
       loadingMore: false,
       data: [],
+      locations: {},
       error: null,
       totalPages: 0,
     };
@@ -103,6 +106,7 @@ describe('search reducer', () => {
       fetching: false,
       loadingMore: false,
       data: [],
+      locations: {},
       error: error,
       totalPages: 0,
     };

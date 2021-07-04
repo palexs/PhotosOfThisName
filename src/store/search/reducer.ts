@@ -6,6 +6,9 @@ import {
   LOAD_MORE_START,
   LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILURE,
+  GET_LOCATION_SUCCESS,
+  GET_LOCATION_FAILURE,
+  GET_LOCATION_START,
 } from './constants';
 
 const initialState: SearchState = {
@@ -15,6 +18,7 @@ const initialState: SearchState = {
   data: [],
   error: null,
   totalPages: 0,
+  locations: {},
 };
 
 const reducer = (state: SearchState = initialState, action: Action) => {
@@ -28,6 +32,7 @@ const reducer = (state: SearchState = initialState, action: Action) => {
         data: [],
         totalPages: 0,
         error: null,
+        locations: {},
       };
     }
     case SEARCH_SUCCESS: {
@@ -45,6 +50,7 @@ const reducer = (state: SearchState = initialState, action: Action) => {
         ...state,
         fetching: false,
         data: [],
+        locations: {},
         error,
       };
     }
@@ -70,6 +76,47 @@ const reducer = (state: SearchState = initialState, action: Action) => {
         loadingMore: false,
         data: [],
         error,
+      };
+    }
+    case GET_LOCATION_START: {
+      const {photoID} = action;
+      return {
+        ...state,
+        locations: {
+          ...state.locations,
+          [photoID]: {
+            loading: true,
+            error: null,
+            country: null,
+          },
+        },
+      };
+    }
+    case GET_LOCATION_SUCCESS: {
+      const {photoID, country} = action;
+      return {
+        ...state,
+        locations: {
+          ...state.locations,
+          [photoID]: {
+            loading: false,
+            country,
+          },
+        },
+      };
+    }
+    case GET_LOCATION_FAILURE: {
+      const {photoID, error} = action;
+      return {
+        ...state,
+        locations: {
+          ...state.locations,
+          [photoID]: {
+            loading: false,
+            country: null,
+            error,
+          },
+        },
       };
     }
     default:

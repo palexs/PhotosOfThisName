@@ -1,4 +1,4 @@
-import {Photo, PhotoSize} from './types';
+import {Photo, PhotoSize, PhotoLocation} from './types';
 import {RootState} from '../types';
 
 export const getQuery = (state: RootState) => state.search.query;
@@ -12,6 +12,9 @@ export const getTotalPages = (state: RootState) => state.search.totalPages;
 export const getLoadingMore = (state: RootState) => state.search.loadingMore;
 
 export const getError = (state: RootState) => state.search.error;
+
+export const getCountry = (state: RootState, photoID: string) =>
+  (state.search.locations as {[photoID: string]: PhotoLocation})[photoID];
 
 export const getSizedImageUrlForPhoto = (
   photo: Photo,
