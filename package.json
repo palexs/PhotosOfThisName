@@ -62,6 +62,7 @@
       "json",
       "node"
     ],
+    "coveragePathIgnorePatterns": ["types.ts"],
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/helpers.ts"
     ]
