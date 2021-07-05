@@ -147,7 +147,7 @@ export const openURL: ThunkActionCreator =
     const isSupported = await Linking.canOpenURL(url);
     if (isSupported) {
       try {
-        await Linking.openURL('url');
+        await Linking.openURL(url);
         dispatch(trackOpenURL(url));
       } catch (error) {
         dispatch(trackOpenURLFailure(error));
