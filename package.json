@@ -65,6 +65,9 @@
     "coveragePathIgnorePatterns": ["types.ts"],
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/helpers.ts"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|@react-native|react-navigation|@react-navigation/.*|react-native-elements)"
     ]
   }
 }
