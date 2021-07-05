@@ -1,4 +1,4 @@
-import {Photo, PhotoSize} from '../../src/store/photos/types';
+import {Photo, PhotoSize} from '../../../src/store/photos/types';
 import {
   getData,
   getError,
@@ -8,8 +8,8 @@ import {
   getSizedImageUrlForPhoto,
   getTotalPages,
   getPhotoLocation,
-} from '../../src/store/photos/selectors';
-import {RootState} from '../../src/store/types';
+} from '../../../src/store/photos/selectors';
+import {RootState} from '../../../src/store/types';
 
 describe('search selectors', () => {
   const photo: Photo = {

@@ -1,5 +1,5 @@
 import fetchMock from 'jest-fetch-mock';
-import getMockStore from '../helpers';
+import getMockStore from '../../helpers';
 import {
   SEARCH_START,
   SEARCH_SUCCESS,
@@ -9,8 +9,12 @@ import {
   LOAD_MORE_FAILURE,
   TRACK_OPEN_URL,
   TRACK_OPEN_URL_FAILURE,
-} from '../../src/store/photos/constants';
+  GET_LOCATION_START,
+  GET_LOCATION_SUCCESS,
+  GET_LOCATION_FAILURE,
+} from '../../../src/store/photos/constants';
 import {
+  getLocation,
   loadMore,
   loadMoreFailure,
   loadMoreStart,
@@ -21,8 +25,8 @@ import {
   searchStart,
   searchSuccess,
   trackOpenURL,
-} from '../../src/store/photos/actions';
-import {PhotosResponse} from '../../src/store/photos/types';
+} from '../../../src/store/photos/actions';
+import {PhotosResponse} from '../../../src/store/photos/types';
 
 fetchMock.enableMocks();
 
@@ -104,7 +108,7 @@ describe('thunk actions', () => {
 
     it('failure - status fail', () => {
       expect.assertions(1);
-      fetchMock.mockResponse(JSON.stringify({stat: 'fail', photos: {}}));
+      fetchMock.mockResponse(JSON.stringify({stat: 'fail'}));
 
       const expectedError = Error('Unknown error occurred.');
 
@@ -147,6 +151,109 @@ describe('thunk actions', () => {
     });
   });
 
+  describe('getLocation', () => {
+    beforeEach(() => {
+      fetchMock.resetMocks();
+    });
+
+    it('success', () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(
+        JSON.stringify({
+          stat: 'ok',
+          photo: {
+            id: '12345',
+            location: {
+              country: {
+                _content: 'Ukraine',
+              },
+            },
+          },
+        }),
+      );
+
+      const store = getMockStore({
+        state: {
+          photos: {
+            query: 'test',
+            locations: {},
+          },
+        },
+      });
+      return store.dispatch(getLocation('12345')).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: GET_LOCATION_START, photoID: '12345'},
+          {type: GET_LOCATION_SUCCESS, country: 'Ukraine', photoID: '12345'},
+        ]);
+      });
+    });
+
+    it('failure - status fail', () => {
+      expect.assertions(1);
+      fetchMock.mockResponse(JSON.stringify({stat: 'fail'}));
+
+      const expectedError = Error('Unknown error occurred.');
+
+      const store = getMockStore({
+        state: {
+          photos: {
+            query: 'test',
+            locations: {},
+          },
+        },
+      });
+      return store.dispatch(getLocation('12345')).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: GET_LOCATION_START, photoID: '12345'},
+          {type: GET_LOCATION_FAILURE, error: expectedError, photoID: '12345'},
+        ]);
+      });
+    });
+
+    it('failure - status code 500', () => {
+      expect.assertions(1);
+      fetchMock.mockResponse('', {status: 500});
+
+      const expectedError = Error('Data is unavailable. Response status: 500');
+
+      const store = getMockStore({
+        state: {
+          photos: {
+            query: 'test',
+            locations: {},
+          },
+        },
+      });
+      return store.dispatch(getLocation('12345')).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: GET_LOCATION_START, photoID: '12345'},
+          {type: GET_LOCATION_FAILURE, error: expectedError, photoID: '12345'},
+        ]);
+      });
+    });
+
+    it('failure - error', () => {
+      expect.assertions(1);
+      const expectedError = Error('Server error.');
+      fetchMock.mockReject(expectedError);
+
+      const store = getMockStore({
+        state: {
+          photos: {
+            query: 'test',
+            locations: {},
+          },
+        },
+      });
+      return store.dispatch(getLocation('12345')).then(() => {
+        expect(store.getActions()).toEqual([
+          {type: GET_LOCATION_START, photoID: '12345'},
+          {type: GET_LOCATION_FAILURE, error: expectedError, photoID: '12345'},
+        ]);
+      });
+    });
+  });
+
   describe('loadMore', () => {
     beforeEach(() => {
       fetchMock.resetMocks();
@@ -173,7 +280,7 @@ describe('thunk actions', () => {
 
     it('failure - status fail', () => {
       expect.assertions(1);
-      fetchMock.mockResponse(JSON.stringify({stat: 'fail', photos: {}}));
+      fetchMock.mockResponse(JSON.stringify({stat: 'fail'}));
 
       const expectedError = Error('Unknown error occurred.');
 

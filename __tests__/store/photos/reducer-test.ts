@@ -1,4 +1,4 @@
-import reducer from '../../src/store/photos/reducer';
+import reducer from '../../../src/store/photos/reducer';
 import {
   SEARCH_START,
   SEARCH_SUCCESS,
@@ -9,8 +9,8 @@ import {
   GET_LOCATION_START,
   GET_LOCATION_SUCCESS,
   GET_LOCATION_FAILURE,
-} from '../../src/store/photos/constants';
-import {Action, Photo} from '../../src/store/photos/types';
+} from '../../../src/store/photos/constants';
+import {Action, Photo} from '../../../src/store/photos/types';
 
 describe('photos reducer', () => {
   const photo1: Photo = {
@@ -334,5 +334,22 @@ describe('photos reducer', () => {
     // @ts-ignore
     const outputState = reducer(inputState, {type: 'SOME_OTHER_ACTION'});
     expect(outputState).toEqual(inputState);
+  });
+
+  it('uses initial state value', () => {
+    expect.assertions(1);
+
+    const action: Action = {type: SEARCH_START, name: 'test'};
+    const expectedState = {
+      query: 'test',
+      data: [],
+      fetching: true,
+      loadingMore: false,
+      locations: {},
+      totalPages: 0,
+      error: null,
+    };
+    const outputState = reducer(undefined, action);
+    expect(outputState).toEqual(expectedState);
   });
 });
